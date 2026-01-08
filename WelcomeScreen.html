@@ -349,16 +349,7 @@ body {
   </div>
 </div>
 
-<script>
-/* ===== STICKY PROFILE DATA ===== */
-// const profileData = {
-//   name: "SnehaLatha",
-//   role: "Developer",
-//   avatar: "https://ui-avatars.com/api/?name=Sneha+Latha&background=315f86&color=fff"
-// };
-
-// localStorage.setItem("profile", JSON.stringify(profileData));
-
+<!-- <script>
 const profile = JSON.parse(localStorage.getItem("profile"));
 
 document.getElementById("sideName").innerText = profile.name;
@@ -412,7 +403,72 @@ document.getElementById("sideAvatar").src = avatarUrl;
 document.getElementById("topAvatar").src = avatarUrl;
 
 
+</script> -->
+
+
+
+<script>
+  // ===== AUTH CHECK =====
+  const tokenlocal = localStorage.getItem("authToken");
+  const employeeName = localStorage.getItem("employeeName");
+  const employeeRole = localStorage.getItem("employeeRole");
+
+  if (!tokenlocal || !employeeName) {
+    window.location.href = "index.html";
+  }
+
+  // ===== PROFILE UI =====
+  document.getElementById("sideName").innerText = employeeName;
+  document.getElementById("sideRole").innerText = employeeRole;
+
+  document.getElementById("topName").innerText = employeeName;
+  document.getElementById("topRole").innerText = employeeRole;
+
+  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(employeeName)}&background=315f86&color=fff`;
+  document.getElementById("sideAvatar").src = avatarUrl;
+  document.getElementById("topAvatar").src = avatarUrl;
+
+  // ===== ADMIN MENU VISIBILITY =====
+  if (employeeRole !== "ADMIN") {
+    document.querySelectorAll(".admin-only")
+      .forEach(el => el.style.display = "none");
+  }
+
+  // ===== SIDEBAR =====
+  const sidebar = document.getElementById("sidebar");
+  const frame = document.getElementById("contentFrame");
+  const welcomeView = document.getElementById("welcomeView");
+
+  function toggleSidebar() {
+    sidebar.classList.toggle("open");
+  }
+
+  function loadScreen(file, el) {
+    document.querySelectorAll(".menu-item, .payslip-box")
+      .forEach(i => i.classList.remove("active"));
+
+    el.classList.add("active");
+    welcomeView.style.display = "none";
+    frame.style.display = "block";
+    frame.src = file;
+
+    if (window.innerWidth < 768) {
+      sidebar.classList.remove("open");
+    }
+  }
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
 <script>
 async function logout() {
   const token = localStorage.getItem("authToken");
