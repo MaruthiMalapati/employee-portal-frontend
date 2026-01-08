@@ -263,9 +263,13 @@ body {
 
       <!-- MENU -->
       <div class="menu-list">
-        <div class="menu-item admin-only" onclick="loadScreen('admin/admin.html', this)">
-  <i class="bi bi-person-plus-fill"></i> Create Employee 
-</div>
+        <div class="menu-item admin-only" onclick="loadScreen('admin/create-employee.html', this)">
+            <i class="bi bi-person-plus me-2"></i>Create Employee
+        </div>
+          <div class="menu-item admin-only" onclick="loadScreen('admin/manage-employees.html', this)">
+           <i class="bi bi-people me-2"></i>Manage Employees
+        </div>
+
 
         <div class="menu-item" onclick="loadScreen('logintime.html',this)">
      <i class="bi bi-stopwatch"></i> Login Times
@@ -469,11 +473,10 @@ const welcomeText = document.getElementById("welcomeText");
 
 
 
-
+<script src="js/config.js"></script>
 <script>
 async function logout() {
   const token = localStorage.getItem("authToken");
-const API_BASE_URL = "https://employee-portal-backend-zqbo.onrender.com";
 
   if (!token) {
     window.location.href = "index.html";

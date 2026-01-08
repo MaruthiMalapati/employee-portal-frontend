@@ -106,11 +106,10 @@
       </div>
     </div>
   </div>
-
+<script src="js/config.js"></script>
   <script>
     async function createEmployee() {
       const token = localStorage.getItem("authToken");
-const API_BASE_URL = "https://employee-portal-backend-zqbo.onrender.com";
 
       if (!token) {
         alert("Admin login required");

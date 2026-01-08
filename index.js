@@ -1,7 +1,7 @@
 const usernameInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const form = document.getElementById("loginForm");
-const API_BASE_URL = "https://employee-portal-backend-zqbo.onrender.com";
+
 
 // username OR email
 function isValidUsernameOrEmail(value) {
