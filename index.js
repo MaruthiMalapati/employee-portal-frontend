@@ -1,6 +1,7 @@
 const usernameInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const form = document.getElementById("loginForm");
+const API_BASE_URL = "https://employee-portal-backend-zqbo.onrender.com";
 
 // username OR email
 function isValidUsernameOrEmail(value) {
@@ -41,7 +42,7 @@ form.addEventListener("submit", async (e) => {
   if (!validUser || !validPass) return;
 
   try {
-    const res = await fetch("http://localhost:3000/api/login", {
+    const res = await fetch(`${API_BASE_URL}/api/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
@@ -77,7 +78,7 @@ function togglePassword(icon) {
 }
 
 async function submit() {
-  await fetch("http://localhost:3000/api/auth/forgot-password", {
+  await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email: email.value })

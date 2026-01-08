@@ -101,6 +101,7 @@
   <script>
     async function createEmployee() {
       const token = localStorage.getItem("authToken");
+const API_BASE_URL = "https://employee-portal-backend-zqbo.onrender.com";
 
       if (!token) {
         alert("Admin login required");
@@ -120,7 +121,7 @@
 
       try {
         const response = await fetch(
-          "http://localhost:3000/api/admin/create-employee",
+          `${API_BASE_URL}/api/admin/create-employee`,
           {
             method: "POST",
             headers: {
