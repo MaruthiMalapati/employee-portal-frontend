@@ -328,7 +328,7 @@ body {
       <!-- WELCOME -->
      <div id="welcomeView">
   <div class="text-center">
-    <h2>Welcome SnehaLatha 👋</h2>
+    <h2 id="welcomeText"></h2>
     <p class="text-muted">
       Use the sidebar to manage your work and performance.
     </p>
@@ -416,7 +416,8 @@ document.getElementById("topAvatar").src = avatarUrl;
   if (!tokenlocal || !employeeName) {
     window.location.href = "index.html";
   }
-
+const welcomeText = document.getElementById("welcomeText");
+  welcomeText.innerText = `Welcome, ${employeeName} 👋!`;
   // ===== PROFILE UI =====
   document.getElementById("sideName").innerText = employeeName;
   document.getElementById("sideRole").innerText = employeeRole;
