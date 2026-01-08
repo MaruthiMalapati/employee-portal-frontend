@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Employee Works</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Inter", sans-serif;
+            background: #ffffff;
+        }
+
+        .mobile-header {
+            display: none;
+            padding: 12px 16px;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .mobile-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mobile-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid #2f5f88;
+            object-fit: cover;
+        }
+
+        .mobile-name {
+            font-weight: 600;
+            color: #0f1f44;
+        }
+
+        .mobile-role {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .menu-btn {
+            background: #2f5f88;
+            color: #ffffff;
+            border: none;
+            border-radius: 25px;
+            padding: 8px 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 100%;
+            background: #2f5f88;
+            color: #ffffff;
+            padding: 24px 18px;
+            transform: translateX(-100%);
+            transition: 0.3s ease;
+            z-index: 1050;
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar h5 {
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 16px;
+        }
+
+        .sidebar a {
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+        }
+
+        .logout-btn {
+            width: 100%;
+            border: 1px solid #ffffff;
+            border-radius: 25px;
+            padding: 10px;
+            background: transparent;
+            color: #ffffff;
+            font-size: 0.85rem;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 1040;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-wrapper {
+            padding: 24px 32px;
+            min-height: 100vh;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #0f1f44;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            text-align: center;
+        }
+
+        thead th {
+            background: #f3faff;
+           font-size: 13px;
+        }
+
+        tbody tr {
+            background: #ffffff;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f3faff;
+        }
+
+        tbody td {
+            padding: 12px;
+            font-size: 13px;
+        }
+
+        .rounded-pill {
+            background: #376A98;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-header {
+                display: flex;
+            }
+
+            .main-wrapper {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- MOBILE HEADER -->
+   
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <h5>Menu</h5>
+        <ul>
+            <li><a href="employeework.html"><i class="bi bi-people"></i> Employee Works</a></li>
+            <li><a href="uploadworks.html"><i class="bi bi-upload"></i> Upload Works</a></li>
+            <li><a href="perfomance.html"><i class="bi bi-bar-chart"></i> Performance</a></li>
+            <li><a href="sheduletime.html"><i class="bi bi-calendar"></i> Schedules</a></li>
+            <li><a href="messages.html"><i class="bi bi-chat"></i> Messages</a></li>
+            <li><a href="notifications.html"><i class="bi bi-bell"></i> Notifications</a></li>
+            <li><a href="dumpfiles.html"><i class="bi bi-trash"></i> Dump Files</a></li>
+            <li><a href="payslips.html"><i class="bi bi-receipt"></i> PaySlips</a></li>
+        </ul>
+
+        <button class="logout-btn">
+            <i class="bi bi-box-arrow-right"></i> Log Out
+        </button>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-wrapper">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <h1 class="page-title">Employee Works</h1>
+            <span id="totalCount" class="badge rounded-pill"></span>
+        </div>
+
+        <p class="page-subtitle">Department wise work updates</p>
+
+        <div class="table-responsive">
+            <table class="table-borderless">
+                <thead id="tableHead"></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+        function toggleMenu() {
+            document.getElementById("sidebar").classList.toggle("open");
+            document.getElementById("overlay").classList.toggle("show");
+        }
+
+        /* ===== LOGIN DEPARTMENT ===== */
+        const loggedInDepartment = "Web Development";
+        // "UI/UX"
+        // "Marketing"
+
+        /* ===== DEPARTMENT DATA ===== */
+        const departmentConfig = {
+            "Web Development": {
+                headers: ["Emp Name", "Company Name", "Work Status", "Reason", "Time Duration"],
+                data: [
+                    { "Emp Name": "Login Module", "Company Name": "SVS Jewellery", "Work Status": "In Progress", "Reason": "API dependency", "Time Duration": "4 Hours" },
+                    { "Emp Name": "Dashboard Charts", "Company Name": "Commo", "Work Status": "Completed", "Reason": "-", "Time Duration": "3 Hours" }
+                ]
+            },
+
+            "UI/UX": {
+                headers: ["Work Name", "Department", "Required Posters/Pages", "Time of Submition"],
+                data: [
+                    { "Work Name": "Mobile App UI", "Department": "Food App", "Required Posters/Pages": "Approved", "Time of Submition": "Minor change" },
+                    { "Work Name": "Website Redesign", "Department": "E-commerce", "Required Posters/Pages": "Pending", "Time of Submition": "Client review" }
+                ]
+            },
+
+            "Marketing": {
+                headers: ["Emp Name", "Company name", "Campaign Status", "Time duration", "Reason","Reports"],
+                data: [
+                    { "Emp Name": "Diwali Ads", "Company name": "Instagram", "Campaign Status": "Running", "Time duration": "High CTR", "Reason": "7 Days" ,"Reports":"kjh"},
+                    { "Emp Name": "SEO Audit", "Company name": "Website", "Campaign Status": "Completed", "Time duration": "Ranking up", "Reason": "2 Days" ,"Reports":"nbv"}
+                ]
+            }
+        };
+
+        const tableHead = document.getElementById("tableHead");
+        const tableBody = document.getElementById("tableBody");
+        const totalCount = document.getElementById("totalCount");
+
+        const department = departmentConfig[loggedInDepartment];
+
+        tableHead.innerHTML = `
+            <tr>${department.headers.map(h => `<th>${h}</th>`).join("")}</tr>
+        `;
+
+        tableBody.innerHTML = "";
+        department.data.forEach(row => {
+            tableBody.innerHTML += `
+                <tr>${Object.values(row).map(val => `<td>${val}</td>`).join("")}</tr>
+            `;
+        });
+
+        totalCount.textContent = department.data.length + " Works";
+    </script>
+
+</body>
+</html>

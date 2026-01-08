@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>View Project</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+  <style>
+    body {
+      margin: 0;
+      background: #f5f6fa;
+      font-family: Arial, sans-serif;
+    }
+
+    .ew-mobile-header {
+      display: none;
+    }
+
+    .ew-mobile-avatar-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #315f86;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .ew-mobile-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .ew-mobile-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0f1f44;
+    }
+
+    .ew-mobile-role {
+      font-size: 12px;
+      color: #6c757d;
+    }
+
+    .ew-mobile-menu-btn {
+      display: none;
+    }
+
+    .ew-mobile-sidebar {
+      display: none;
+    }
+
+    .ew-mobile-sidebar-overlay {
+      display: none;
+    }
+
+    .main-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .content-area {
+      flex: 1;
+      padding: 30px 40px;
+      background: #fff;
+    }
+
+    .view-title {
+      font-weight: 600;
+      color: #1e4f91;
+      margin-bottom: 25px;
+    }
+
+    .project-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .project-info h6 {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .project-info span {
+      color: #333;
+      font-size: 14px;
+    }
+
+    .image-box {
+      border: 1px solid #dcdcdc;
+      background: #f2f2f2;
+      height: 140px;
+      overflow: hidden;
+    }
+
+    .image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .action-buttons {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .action-buttons button {
+      font-size: 12px;
+      padding: 4px 14px;
+      margin: 0 6px;
+    }
+
+    .approved-active {
+      background-color: #198754 !important;
+      color: #fff !important;
+    }
+
+    .rejected-active {
+      background-color: #dc3545 !important;
+      color: #fff !important;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .back-btn-icon {
+      border: none;
+      background: transparent;
+      color: #1e4f91;
+      font-size: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin-right: 8px;
+      cursor: pointer;
+    }
+
+    .back-btn-icon:focus {
+      outline: none;
+    }
+
+    @media (max-width: 767.98px) {
+      .ew-mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px 0;
+        gap: 8px;
+        background: #ffffff;
+      }
+
+      .ew-mobile-menu-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        border: 2px solid #315f86;
+        background-color: #315f86;
+        padding: 0.35rem 1.2rem;
+        font-size: 0.9rem;
+        color: #ffffff;
+        font-weight: 600;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+        gap: 0.35rem;
+      }
+
+      .ew-mobile-menu-btn i {
+        font-size: 1.2rem;
+      }
+
+      .ew-mobile-sidebar {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 260px;
+        max-width: 80%;
+        background-color: #315f86;
+        color: #ffffff;
+        padding: 1.5rem 1.2rem;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 1040;
+      }
+
+      .ew-mobile-sidebar.open {
+        transform: translateX(0);
+      }
+
+      .ew-mobile-sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1030;
+      }
+
+      .ew-mobile-sidebar-overlay.show {
+        display: block;
+      }
+
+      .ew-mobile-sidebar-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .ew-mobile-menu-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 0.9rem;
+      }
+
+      .ew-mobile-menu-item {
+        padding: 0.45rem 0.2rem;
+        border-radius: 0.4rem;
+        margin-bottom: 0.15rem;
+      }
+
+      .ew-mobile-menu-item a {
+        color: #e6f0fb;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .ew-mobile-menu-item a i {
+        font-size: 1rem;
+      }
+
+      .ew-mobile-menu-item a:hover,
+      .ew-mobile-menu-item.active a {
+        border: 1px solid white;
+        border-radius: 0.4rem;
+        color: white;
+        padding: 5px;
+      }
+
+      .content-area {
+        padding: 20px 16px 30px;
+      }
+
+      .view-title {
+        margin-bottom: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- <div class="ew-mobile-header d-md-none">
+    <div class="d-flex align-items-center gap-2">
+      <div class="ew-mobile-avatar-circle">
+        <img
+          src="https://media.istockphoto.com/id/1354842602/photo/portrait-of-a-young-businesswoman-working-on-a-laptop-in-an-office.jpg?s=612x612&w=0&k=20&c=kfP1g2712RiaxsDriIxFo363ARlaL2D591s-22CnIo8="
+          alt="Profile" class="ew-mobile-avatar-img">
+      </div>
+      <div>
+        <div class="ew-mobile-name">SnehaLatha</div>
+        <div class="ew-mobile-role">Developer</div>
+      </div>
+    </div>
+    <button type="button" class="ew-mobile-menu-btn" onclick="ewToggleSidebar()">
+      <i class="bi bi-list"></i>
+      <span>Menu</span>
+    </button>
+  </div> -->
+
+  <nav class="ew-mobile-sidebar" id="ewMobileSidebar">
+    <div class="ew-mobile-sidebar-title">Menu</div>
+    <ul class="ew-mobile-menu-list">
+      <li class="ew-mobile-menu-item">
+        <a href="employeework.html">
+          <i class="bi bi-people-fill"></i>
+          <span>Employee Works</span>
+        </a>
+      </li>
+      <li class="ew-mobile-menu-item">
+        <a href="uploadworks.html">
+          <i class="bi bi-upload"></i>
+          <span>Upload Works</span>
+        </a>
+      </li>
+      <li class="ew-mobile-menu-item active">
+        <a href="perfomance.html">
+          <i class="bi bi-bar-chart-line"></i>
+          <span>Performance</span>
+        </a>
+      </li>
+      <li class="ew-mobile-menu-item">
+        <a href="sheduletime.html">
+          <i class="bi bi-calendar-week"></i>
+          <span>Schedules</span>
+        </a>
+      </li>
+      <li class="ew-mobile-menu-item">
+        <a href="messages.html">
+          <i class="bi bi-chat-dots"></i>
+          <span>Messages</span>
+        </a>
+      </li>
+      <li class="ew-mobile-menu-item">
+        <a href="notifications.html">
+          <i class="bi bi-bell"></i>
+          <span>Notifications</span>
+        </a>
+      </li>
+      <li class="ew-mobile-menu-item">
+        <a href="dumpfiles.html">
+          <i class="bi bi-trash"></i>
+          <span>Dump Files</span>
+        </a>
+      </li>
+      <li class="ew-mobile-menu-item">
+        <a href="payslips.html">
+          <i class="bi bi-receipt"></i>
+          <span>PaySlips</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="ew-mobile-sidebar-overlay" id="ewMobileSidebarOverlay" onclick="ewToggleSidebar()"></div>
+
+  <div class="main-wrapper">
+    <div class="content-area">
+
+      <div class="d-flex align-items-center mb-3">
+        <button type="button" class="back-btn-icon" onclick="goToPerformance()">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+        <h5 class="view-title mb-0">View</h5>
+      </div>
+
+      <div class="project-info">
+        <div>
+          <h6>Project Name</h6>
+          <span>Svs Jewellery</span>
+        </div>
+        <div>
+          <span class="fw-semibold">04/07</span>
+        </div>
+      </div>
+
+      <div class="row g-4">
+
+        <div class="col-md-6 col-lg-4">
+          <div class="image-box">
+            <img src="https://picsum.photos/500/300?random=1" alt="Poster 1">
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-outline-success approve-btn">Approved</button>
+            <button class="btn btn-outline-danger reject-btn">Rejected</button>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="image-box">
+            <img src="https://picsum.photos/500/300?random=2" alt="Poster 2">
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-outline-success approve-btn">Approved</button>
+            <button class="btn btn-outline-danger reject-btn">Rejected</button>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="image-box">
+            <img src="https://picsum.photos/500/300?random=3" alt="Poster 3">
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-outline-success approve-btn">Approved</button>
+            <button class="btn btn-outline-danger reject-btn">Rejected</button>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="image-box">
+            <img src="https://picsum.photos/500/300?random=4" alt="Poster 4">
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-outline-success approve-btn">Approved</button>
+            <button class="btn btn-outline-danger reject-btn">Rejected</button>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="image-box">
+            <img src="https://picsum.photos/500/300?random=5" alt="Poster 5">
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-outline-success approve-btn">Approved</button>
+            <button class="btn btn-outline-danger reject-btn">Rejected</button>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+          <div class="image-box">
+            <img src="https://picsum.photos/500/300?random=6" alt="Poster 6">
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-outline-success approve-btn">Approved</button>
+            <button class="btn btn-outline-danger reject-btn">Rejected</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function ewToggleSidebar() {
+      const sidebar = document.getElementById("ewMobileSidebar");
+      const overlay = document.getElementById("ewMobileSidebarOverlay");
+      const isOpen = sidebar.classList.contains("open");
+
+      if (isOpen) {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+      } else {
+        sidebar.classList.add("open");
+        overlay.classList.add("show");
+      }
+    }
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 768) {
+        const sidebar = document.getElementById("ewMobileSidebar");
+        const overlay = document.getElementById("ewMobileSidebarOverlay");
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+      }
+    });
+
+    function goToPerformance() {
+      window.location.href = "perfomance.html";
+    }
+
+    document.querySelectorAll('.action-buttons').forEach(block => {
+      const approveBtn = block.querySelector('.approve-btn');
+      const rejectBtn = block.querySelector('.reject-btn');
+
+      approveBtn.addEventListener('click', () => {
+        approveBtn.classList.add('approved-active');
+        rejectBtn.disabled = true;
+      });
+
+      rejectBtn.addEventListener('click', () => {
+        rejectBtn.classList.add('rejected-active');
+        approveBtn.disabled = true;
+      });
+    });
+  </script>
+
+</body>
+
+</html>

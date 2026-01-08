@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Upload Works</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #ffffff;
+      font-family: "Inter", sans-serif;
+    }
+
+    .main-wrapper {
+      width: 100%;
+      min-height: 100vh;
+      padding: 24px 32px;
+      box-sizing: border-box;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #0f1f44;
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      color: #6c757d;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+      text-align: center;
+      margin: 0;
+    }
+
+    thead th {
+      background: #f3faff;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 12px;
+      white-space: nowrap;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #f3faff;
+    }
+
+    tbody td {
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    .btn-upload {
+      border-radius: 999px;
+      border: 1px solid #376A98;
+      font-size: 12px;
+      padding: 4px 12px;
+      background-color: #f3faff;
+      color: #376A98;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .btn-upload:hover {
+      background: #376A98;
+      color: white;
+    }
+
+    .file-name {
+      font-size: 11px;
+      display: block;
+      margin-top: 4px;
+      color: #555;
+    }
+
+    #totalCount {
+      background-color: #376A98;
+      color: #ffffff;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .ew-mobile-header {
+      display: none;
+    }
+
+    .ew-mobile-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #315f86;
+    }
+
+    .ew-mobile-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0f1f44;
+    }
+
+    .ew-mobile-role {
+      font-size: 12px;
+      color: #6c757d;
+    }
+
+    .ew-mobile-menu-btn {
+      display: none;
+    }
+
+    .ew-mobile-sidebar {
+      display: none;
+    }
+
+    .ew-mobile-sidebar-overlay {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .ew-mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px 0;
+        gap: 8px;
+      }
+
+      .ew-mobile-menu-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        border: 2px solid #315f86;
+        background-color: #315f86;
+        padding: 0.4rem 1.3rem;
+        font-size: 0.95rem;
+        color: #ffffff;
+        font-weight: 600;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+        gap: 0.35rem;
+      }
+
+      .ew-mobile-menu-btn i {
+        font-size: 1.2rem;
+      }
+
+      .ew-mobile-menu-btn:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      .ew-mobile-sidebar {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 260px;
+        max-width: 80%;
+        background-color: #315f86;
+        color: #ffffff;
+        padding: 1.5rem 1.2rem;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 1040;
+      }
+
+      .ew-mobile-sidebar.open {
+        transform: translateX(0);
+      }
+
+      .ew-mobile-sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1030;
+      }
+
+      .ew-mobile-sidebar-overlay.show {
+        display: block;
+      }
+
+      .ew-mobile-sidebar-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .ew-mobile-menu-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 0.8rem;
+        line-height: 1rem;
+      }
+
+      .ew-mobile-menu-item {
+        padding: 0.45rem 0.2rem;
+        border-radius: 0.4rem;
+        margin-bottom: 0.15rem;
+      }
+
+      .ew-mobile-menu-item a {
+        color: #e6f0fb;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .ew-mobile-menu-item a i {
+        font-size: 1rem;
+      }
+
+      .ew-mobile-menu-item a:hover,
+      .ew-mobile-menu-item.active a {
+        border: 1px solid white;
+        border-radius: 0.4rem;
+        color: white;
+        padding: 5px;
+      }
+
+      .main-wrapper {
+        padding: 16px;
+        padding-top: 8%;
+      }
+    }
+
+    .btn-logout-side {
+      width: 100%;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      padding: 0.45rem 0;
+      background: transparent;
+      border: 1px solid #ffffff;
+      color: #ffffff;
+
+    }
+
+    .btn-logout-side:hover {
+      background-color: #f44336;
+      border-color: #f44336;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- <div class="ew-mobile-header">
+    <div class="d-flex align-items-center gap-2">
+      <img
+        src="https://media.istockphoto.com/id/1354842602/photo/portrait-of-a-young-businesswoman-working-on-a-laptop-in-an-office.jpg?s=612x612&w=0&k=20&c=kfP1g2712RiaxsDriIxFo363ARlaL2D591s-22CnIo8="
+        alt="Profile" class="ew-mobile-avatar">
+      <div>
+        <div class="ew-mobile-name">SnehaLatha</div>
+        <div class="ew-mobile-role">Developer</div>
+      </div>
+    </div>
+    <button type="button" class="ew-mobile-menu-btn" onclick="ewToggleSidebar()">
+      <i class="bi bi-list"></i>
+      <span>Menu</span>
+    </button>
+  </div> -->
+
+  <nav class="ew-mobile-sidebar" id="ewMobileSidebar">
+    <div class="ew-mobile-sidebar-title">Menu</div>
+    <ul class="ew-mobile-menu-list">
+      <li class="ew-mobile-menu-item">
+        <a href="employeework.html">
+          <i class="bi bi-people-fill"></i>
+          <span>Employee Works</span>
+        </a>
+      </li>
+      <li class="ew-mobile-menu-item active">
+        <a href="uploadworks.html">
+          <i class="bi bi-upload"></i>
+          <span>Upload Works</span>
+        </a>
+      </li>
+      <li class="ew-mobile-menu-item">
+        <a href="perfomance.html">
+          <i class="bi bi-bar-chart-line"></i>
+          <span>Performance</span>
+        </a>
+      </li>
+      <li class="ew-mobile-menu-item">
+        <a href="sheduletime.html">
+          <i class="bi bi-calendar-week"></i>
+          <span>Schedules</span>
+        </a>
+      </li>
+      <li class="ew-mobile-menu-item">
+        <a href="messages.html">
+          <i class="bi bi-chat-dots"></i>
+          <span>Messages</span>
+        </a>
+      </li>
+      <li class="ew-mobile-menu-item">
+        <a href="notifications.html">
+          <i class="bi bi-bell"></i>
+          <span>Notifications</span>
+        </a>
+      </li>
+      <li class="ew-mobile-menu-item">
+        <a href="dumpfiles.html">
+          <i class="bi bi-trash"></i>
+          <span>Dump Files</span>
+        </a>
+      </li>
+      <li class="ew-mobile-menu-item">
+        <a href="payslips.html">
+          <i class="bi bi-receipt"></i>
+          <span>PaySlips</span>
+        </a>
+      </li>
+    </ul>
+    <div class="mt-2">
+      <a href="index.html">
+        <button class="btn-logout-side" id="btnLogoutSide">
+          <i class="bi bi-box-arrow-right me-1"></i> Log Out
+        </button>
+      </a>
+    </div>
+  </nav>
+
+
+  <div class="ew-mobile-sidebar-overlay" id="ewMobileSidebarOverlay" onclick="ewToggleSidebar()"></div>
+
+  <div class="main-wrapper">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+      <h1 class="page-title mb-0">Upload Works</h1>
+      <span id="totalCount" class="badge"></span>
+    </div>
+
+    <p class="page-subtitle">Today’s assigned works upload status</p>
+
+    <table class="table-borderless">
+      <thead>
+        <tr>
+          <th>Work Name</th>
+          <th>Department</th>
+          <th>Upload Count</th>
+          <th>Upload</th>
+        </tr>
+      </thead>
+      <tbody id="worksBody"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const works = [
+      { name: "Svs Jewellery", dept: "Marketing", uploaded: 1, total: 3 },
+      { name: "Pickles Platter", dept: "Marketing", uploaded: 1, total: 3 },
+      { name: "Cinematic Mandi", dept: "Marketing", uploaded: 1, total: 4 },
+      { name: "Prajay", dept: "Marketing", uploaded: 1, total: 1 },
+      { name: "Commo", dept: "Development", uploaded: 1, total: 2 },
+    ];
+
+    const tbody = document.getElementById("worksBody");
+    document.getElementById("totalCount").textContent = works.length + " Works";
+
+    works.forEach((work, index) => {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${work.name}</td>
+        <td>${work.dept}</td>
+        <td>${String(work.uploaded).padStart(2, '0')}/${String(work.total).padStart(2, '0')}</td>
+        <td>
+          <input type="file" id="fileInput${index}" style="display:none" onchange="showFileName(event, ${index})">
+          <button class="btn-upload" onclick="document.getElementById('fileInput${index}').click()">
+            <i class="bi bi-upload"></i> Upload
+          </button>
+          <span class="file-name" id="fileName${index}"></span>
+        </td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+
+    function showFileName(event, index) {
+      const file = event.target.files[0];
+      if (file) {
+        document.getElementById("fileName" + index).innerText = "Uploaded: " + file.name;
+      }
+    }
+
+    function ewToggleSidebar() {
+      const sidebar = document.getElementById("ewMobileSidebar");
+      const overlay = document.getElementById("ewMobileSidebarOverlay");
+      const isOpen = sidebar.classList.contains("open");
+
+      if (isOpen) {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+      } else {
+        sidebar.classList.add("open");
+        overlay.classList.add("show");
+      }
+    }
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 768) {
+        const sidebar = document.getElementById("ewMobileSidebar");
+        const overlay = document.getElementById("ewMobileSidebarOverlay");
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+      }
+    });
+  </script>
+</body>
+
+</html>

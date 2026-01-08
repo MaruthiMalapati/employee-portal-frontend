@@ -1,0 +1,435 @@
+
+<!-- WelcomeScreen.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Employee Time Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+<script>
+  const token = localStorage.getItem("authToken");
+
+  if (!token) {
+    // Not logged in
+    window.location.href = "index.html";
+  }
+</script>
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+body {
+  background: #cfc7c7;
+}
+
+.app-shell {
+  height: 100vh;
+  background: #fff;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+  background: #315f86;
+  color: #fff;
+  padding: 1.5rem 1.2rem;
+  height: 100%;
+  position: relative;
+}
+
+/* MOBILE CLOSE BUTTON */
+.sidebar-close-btn {
+  display: none;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-close-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+.profile-block {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.profile-avatar-wrap {
+  border: 3px solid #fff;
+  border-radius: 50%;
+  padding: 4px;
+  margin-right: 0.7rem;
+}
+
+.profile-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.profile-role {
+  font-size: 0.8rem;
+}
+
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menu-item,
+.payslip-box {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #e6f0fb;
+}
+
+.menu-item:hover,
+.payslip-box:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.menu-item.active,
+.payslip-box.active {
+  border: 1px solid #fff;
+  color: #fff;
+}
+
+.btn-logout-side {
+  width: 100%;
+  margin-top: 1rem;
+  border-radius: 999px;
+  border: 1px solid #fff;
+  background: transparent;
+  color: #fff;
+  padding: 0.4rem 0;
+}
+
+/* ================= MAIN ================= */
+.main-area {
+  padding: 1.5rem 2rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ================= MOBILE TOP PROFILE ================= */
+.mobile-topbar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.mobile-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.mobile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #315f86;
+  object-fit: cover;
+}
+
+.mobile-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.mobile-role {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.menu-btn {
+  background: #315f86;
+  color: #fff;
+  border: none;
+  padding: 0.45rem 1.2rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+/* ================= CONTENT ================= */
+#welcomeView {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+#contentFrame {
+  display: none;
+  flex: 1;
+  border: none;
+}
+
+/* ================= MOBILE ================= */
+@media(max-width:768px) {
+  body {
+    overflow-y: auto;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 260px;
+    transform: translateX(-100%);
+    transition: 0.3s;
+    z-index: 1050;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .mobile-topbar {
+    display: flex;
+  }
+
+  .sidebar-close-btn {
+    display: flex;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container-fluid h-100">
+  <div class="row h-100 g-0 app-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="col-md-3 sidebar" id="sidebar">
+
+      <!-- CLOSE BUTTON -->
+      <button class="sidebar-close-btn" onclick="toggleSidebar()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+      <!-- PROFILE -->
+      <div class="profile-block">
+        <div class="profile-avatar-wrap">
+          <img id="sideAvatar" class="profile-avatar">
+        </div>
+        <div>
+          <div class="profile-name" id="sideName"></div>
+          <div class="profile-role" id="sideRole"></div>
+        </div>
+      </div>
+
+      <!-- MENU -->
+      <div class="menu-list">
+        <div class="menu-item" onclick="loadScreen('logintime.html',this)">
+     <i class="bi bi-stopwatch"></i> Login Times
+        </div>
+        <div class="menu-item" onclick="loadScreen('employeework.html',this)">
+          <i class="bi bi-people-fill"></i> Employee Works
+        </div>
+        <div class="menu-item" onclick="loadScreen('uploadworks.html',this)">
+          <i class="bi bi-upload"></i> Upload Works
+        </div>
+        <div class="menu-item" onclick="loadScreen('perfomance.html',this)">
+          <i class="bi bi-bar-chart-line"></i> Performance
+        </div>
+        <div class="menu-item" onclick="loadScreen('sheduletime.html',this)">
+          <i class="bi bi-calendar-week"></i> Schedules
+        </div>
+        <div class="menu-item" onclick="loadScreen('messages.html',this)">
+          <i class="bi bi-chat-dots"></i> Messages
+        </div>
+        <div class="menu-item" onclick="loadScreen('notifications.html',this)">
+          <i class="bi bi-bell"></i> Notifications
+        </div>
+        <div class="menu-item" onclick="loadScreen('dumpfiles.html',this)">
+          <i class="bi bi-trash"></i> Dump Files
+        </div>
+
+        <div class="payslip-box mt-2" onclick="loadScreen('payslips.html',this)">
+          <i class="bi bi-receipt"></i> PaySlips
+        </div>
+
+        <a href="index.html">
+          <!-- <button class="btn-logout-side">
+            <i class="bi bi-box-arrow-right me-1"></i> Log Out
+          </button> -->
+          <button class="btn-logout-side" onclick="logout()">
+  <i class="bi bi-box-arrow-right me-1"></i> Log Out
+</button>
+
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="col-md-9 main-area">
+
+      <!-- MOBILE TOP BAR -->
+      <div class="mobile-topbar">
+        <div class="mobile-profile">
+          <img id="topAvatar" class="mobile-avatar">
+          <div>
+            <div class="mobile-name" id="topName"></div>
+            <div class="mobile-role" id="topRole"></div>
+          </div>
+        </div>
+        <button class="menu-btn" onclick="toggleSidebar()">
+          <i class="bi bi-list"></i> Menu
+        </button>
+      </div>
+
+      <!-- WELCOME -->
+     <div id="welcomeView">
+  <div class="text-center">
+    <h2>Welcome SnehaLatha 👋</h2>
+    <p class="text-muted">
+      Use the sidebar to manage your work and performance.
+    </p>
+
+    <!-- GET STARTED BUTTON -->
+    <!-- <button class="btn mt-3 px-4" style="background-color: #315f86;color: white;"
+      onclick="window.location.href='logintime.html'">
+      Get Started
+    </button> -->
+  </div>
+</div>
+
+      
+
+      <iframe id="contentFrame"></iframe>
+    </main>
+
+  </div>
+</div>
+
+<script>
+/* ===== STICKY PROFILE DATA ===== */
+// const profileData = {
+//   name: "SnehaLatha",
+//   role: "Developer",
+//   avatar: "https://ui-avatars.com/api/?name=Sneha+Latha&background=315f86&color=fff"
+// };
+
+// localStorage.setItem("profile", JSON.stringify(profileData));
+
+const profile = JSON.parse(localStorage.getItem("profile"));
+
+document.getElementById("sideName").innerText = profile.name;
+document.getElementById("sideRole").innerText = profile.role;
+document.getElementById("sideAvatar").src = profile.avatar;
+
+document.getElementById("topName").innerText = profile.name;
+document.getElementById("topRole").innerText = profile.role;
+document.getElementById("topAvatar").src = profile.avatar;
+
+/* ===== SIDEBAR ===== */
+const sidebar = document.getElementById("sidebar");
+const frame = document.getElementById("contentFrame");
+const welcomeView = document.getElementById("welcomeView");
+
+function toggleSidebar() {
+  sidebar.classList.toggle("open");
+}
+
+function loadScreen(file, el) {
+  document.querySelectorAll(".menu-item, .payslip-box")
+    .forEach(i => i.classList.remove("active"));
+
+  el.classList.add("active");
+  welcomeView.style.display = "none";
+  frame.style.display = "block";
+  frame.src = file;
+
+  if (window.innerWidth < 768) {
+    sidebar.classList.remove("open");
+  }
+}
+
+/* ===== STICKY PROFILE DATA ===== */
+const name = localStorage.getItem("employeeName");
+const username = localStorage.getItem("employeeUsername");
+
+if (!name) {
+  window.location.href = "index.html";
+}
+
+document.getElementById("sideName").innerText = name;
+document.getElementById("sideRole").innerText = "Employee";
+
+document.getElementById("topName").innerText = name;
+document.getElementById("topRole").innerText = "Employee";
+
+const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=315f86&color=fff`;
+
+document.getElementById("sideAvatar").src = avatarUrl;
+document.getElementById("topAvatar").src = avatarUrl;
+
+
+</script>
+<script>
+async function logout() {
+  const token = localStorage.getItem("authToken");
+
+  if (!token) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  try {
+    await fetch("http://localhost:3000/api/login/logout", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + token,
+        "Content-Type": "application/json"
+      }
+    });
+  } catch (err) {
+    console.error("Logout error", err);
+  }
+
+  // ✅ Clear session
+  localStorage.clear();
+
+  // ✅ Redirect
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

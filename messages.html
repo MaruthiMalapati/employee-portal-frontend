@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Messages</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <style>
+    html,
+    body {
+      overflow-x: hidden;
+    }
+
+    .messages-title {
+      font-weight: 600;
+      font-size: 28px;
+      margin: 16px 0 16px;
+      color: #333;
+    }
+
+    .messages-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 12px 20px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .messages-card {
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+      background-color: #ffffff;
+      border: none;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .messages-row {
+      flex: 1;
+      height: 100%;
+      min-height: 0;
+      display: flex;
+    }
+
+    .contacts-panel {
+      background-color: #f7fafc;
+      border-right: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      height: 100%;
+    }
+
+
+    .contacts-header {
+      background: #1c4f82;
+      color: #ffffff;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 24px 0 0 0;
+      flex-shrink: 0;
+    }
+
+    .contacts-header .avatar-circle {
+      background: #163c61;
+      color: #fff;
+    }
+
+    .avatar-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 18px;
+      background-color: #e5e7eb;
+      color: #111827;
+      flex-shrink: 0;
+    }
+
+    .contacts-header-text-main {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .contacts-header-text-sub {
+      font-size: 12px;
+      opacity: 0.9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
+    }
+
+   .contacts-list {
+  padding: 8px 0 10px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.messages-row,
+.contacts-panel,
+.chat-panel {
+  min-height: 0;
+}
+
+
+    .contact-item {
+      background-color: #f7fafc;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 0;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .contact-item:hover {
+      background-color: #edf2f7;
+    }
+
+    .contact-item.active {
+      background-color: #1c4f82;
+      color: #ffffff;
+    }
+
+    .contact-text-main {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .contact-text-sub {
+      font-size: 12px;
+      opacity: 0.8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 220px;
+    }
+
+    .contact-time {
+      margin-left: auto;
+      font-size: 11px;
+      opacity: 0.7;
+      white-space: nowrap;
+    }
+
+    .contact-item.active .contact-time {
+      color: #dbeafe;
+    }
+
+    .chat-panel {
+      background: #ffffff;
+      border-radius: 0 24px 24px 0;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+    }
+
+   .chat-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 16px 22px 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #285b91;
+  border-radius: 0 24px 0 0;
+}
+
+    .chat-header-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .chat-header-phone {
+      font-size: 12px;
+      color: white;
+    }
+
+    .chat-back-btn {
+      border: none;
+      background: transparent;
+      color: #ffffff;
+      font-size: 1.25rem;
+      margin-right: 4px;
+      display: none;
+      /* mobile only */
+    }
+
+   .chat-messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 24px 12px;
+  background: #ffffff;
+}
+
+
+    .chat-thread {
+      width: 100%;
+      max-width: 100%;
+      flex: 0 0 auto;
+    }
+
+    .chat-empty-state {
+      text-align: center;
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .chat-bubble-row {
+      margin-bottom: 14px;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .chat-bubble-row.incoming {
+      flex-direction: row;
+    }
+
+    .chat-bubble-row.outgoing {
+      flex-direction: row-reverse;
+    }
+
+    .chat-bubble-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #111827;
+      flex-shrink: 0;
+    }
+
+    .chat-bubble {
+      max-width: 70%;
+      border-radius: 18px;
+      padding: 10px 16px;
+      font-size: 13px;
+      line-height: 1.4;
+      margin: 0 10px;
+    }
+
+    .chat-bubble.incoming {
+      background: #f9fafb;
+      color: #111827;
+      border-radius: 18px 18px 18px 4px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .chat-bubble.outgoing {
+      background: #285b91;
+      color: #ffffff;
+      border-radius: 18px 18px 4px 18px;
+    }
+
+    .chat-time-row {
+      text-align: center;
+      font-size: 10px;
+      color: #9ca3af;
+      margin: 4px 0 10px;
+    }
+
+    .chat-footer {
+      padding: 12px 18px 16px;
+      border-top: 1px solid #e5e7eb;
+      background: #f9fbff;
+      border-radius: 0 0 24px 0;
+      flex-shrink: 0;
+    }
+
+    .chat-input-wrapper {
+      display: flex;
+      align-items: center;
+      background: #ffffff;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      padding: 4px 8px 4px 4px;
+    }
+
+    .chat-input-text {
+      border: none;
+      border-radius: 999px;
+      font-size: 13px;
+      padding-left: 8px;
+      box-shadow: none !important;
+    }
+
+    .chat-input-text:focus {
+      border: none;
+      box-shadow: none;
+    }
+
+    .attach-btn-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+      background: #e5e7eb;
+      color: #374151;
+      flex-shrink: 0;
+    }
+
+    .send-btn {
+      border-radius: 999px;
+      font-size: 13px;
+      padding-inline: 14px;
+      flex-shrink: 0;
+      background-color: #163c61;
+      color: white;
+    }
+    /* ================= MOBILE CHAT HEIGHT + KEYBOARD FIX ================= */
+
+/* Dynamic viewport fix for iOS & Android */
+:root {
+  --vh: 1vh;
+}
+
+.messages-wrapper {
+  height: calc(var(--vh) * 100);
+}
+
+/* Ensure chat panel stretches correctly */
+.chat-panel {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Proper scrolling for chat messages */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+
+
+/* Mobile view chat switching fix */
+@media (max-width: 767.98px) {
+  #messagesWrapper.show-chat {
+    height: calc(var(--vh) * 100);
+  }
+
+  #messagesWrapper.show-chat .contacts-panel {
+    display: none !important;
+  }
+
+  #messagesWrapper.show-chat .chat-panel {
+    display: flex !important;
+    height: 100%;
+  }
+
+.chat-footer {
+  position: sticky;
+  bottom: 0;
+  background: #f9fbff;
+  z-index: 10;
+}
+
+}
+@media (max-width: 767.98px) {
+  .messages-wrapper {
+    height: calc(var(--vh) * 100);
+    padding-bottom: 0;
+  }
+
+  .messages-row {
+    flex-direction: column;
+  }
+
+  .contacts-panel {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .chat-panel {
+    flex: 1;
+    min-height: 0;
+    display: none;
+  }
+
+  #messagesWrapper.show-chat .contacts-panel {
+    display: none;
+  }
+
+  #messagesWrapper.show-chat .chat-panel {
+    display: flex;
+  }
+}
+
+
+
+    .file-bubble-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      word-break: break-all;
+      font-size: 12px;
+    }
+
+    .file-bubble-link i {
+      font-size: 16px;
+    }
+
+    .ew-mobile-header {
+      display: none;
+    }
+
+   .ew-mobile-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #315f86;
+    }
+
+    .ew-mobile-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0f1f44;
+    }
+
+    .ew-mobile-role {
+      font-size: 12px;
+      color: #6c757d;
+    }
+
+    .ew-mobile-menu-btn {
+      display: none;
+    }
+
+    .ew-mobile-sidebar {
+      display: none;
+    }
+
+    .ew-mobile-sidebar-overlay {
+      display: none;
+    }
+
+    @media (max-width: 767.98px) {
+
+      .ew-mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px 0;
+        gap: 8px;
+      }
+
+      .ew-mobile-menu-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        border: 2px solid #315f86;
+        background-color: #315f86;
+        padding: 0.35rem 1.2rem;
+        font-size: 0.9rem;
+        color: #ffffff;
+        font-weight: 600;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+        gap: 0.35rem;
+      }
+
+      .ew-mobile-menu-btn i {
+        font-size: 1.2rem;
+      }
+
+      .ew-mobile-sidebar {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 260px;
+        max-width: 80%;
+        background-color: #315f86;
+        color: #ffffff;
+        padding: 1.5rem 1.2rem;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 1040;
+      }
+
+      .ew-mobile-sidebar.open {
+        transform: translateX(0);
+      }
+
+      .ew-mobile-sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1030;
+      }
+
+      .ew-mobile-sidebar-overlay.show {
+        display: block;
+      }
+
+      .ew-mobile-sidebar-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .ew-mobile-menu-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 0.9rem;
+      }
+
+      .ew-mobile-menu-item {
+        padding: 0.45rem 0.2rem;
+        border-radius: 0.4rem;
+        margin-bottom: 0.15rem;
+      }
+
+      .ew-mobile-menu-item a {
+        color: #e6f0fb;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .ew-mobile-menu-item a i {
+        font-size: 1rem;
+      }
+
+      .ew-mobile-menu-item a:hover,
+      .ew-mobile-menu-item.active a {
+        border: 1px solid white;
+        border-radius: 0.4rem;
+        color: white;
+        padding: 5px;
+      }
+
+      .messages-title {
+        margin: 10px 16px 8px;
+        font-size: 22px;
+      }
+
+      .messages-wrapper {
+        padding: 8px;
+        padding-bottom: 80px;
+      }
+
+      .messages-card {
+        border-radius: 18px;
+      }
+
+      .messages-row {
+        flex-direction: column;
+      }
+
+      .contacts-header {
+        border-radius: 18px 18px 0 0;
+      }
+
+      .chat-panel {
+        border-radius: 0 0 18px 18px;
+      }
+
+      .contacts-panel {
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .chat-panel {
+        display: none;
+      }
+
+      #messagesWrapper.show-chat .contacts-panel {
+        display: none;
+      }
+
+      #messagesWrapper.show-chat .chat-panel {
+        display: flex;
+      }
+
+      .chat-back-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+    .chat-messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 12px;
+}
+
+
+      .chat-footer {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 0;
+        z-index: 1050;
+        background: #f9fbff;
+      }
+    }
+
+    .ew-mobile-avatar-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #315f86;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .ew-mobile-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-name {
+      margin-right: 62%;
+
+    }
+
+    .btn-logout-side {
+      width: 100%;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      padding: 0.45rem 0;
+      background: transparent;
+      border: 1px solid #ffffff;
+      color: #ffffff;
+
+    }
+
+    .btn-logout-side:hover {
+      background-color: #f44336;
+      border-color: #f44336;
+    }
+    
+    /* ===== iOS SAFARI CHAT INPUT FIX (ADD ONLY) ===== */
+
+/* Fix iOS viewport height issue */
+@supports (-webkit-touch-callout: none) {
+  html,
+  body {
+    height: -webkit-fill-available;
+  }
+
+  .messages-wrapper {
+    height: -webkit-fill-available;
+  }
+
+  .messages-card {
+    height: 100%;
+  }
+
+  .chat-panel {
+    height: 100%;
+  }
+
+  .chat-messages {
+    padding-bottom: calc(90px + env(safe-area-inset-bottom));
+  }
+
+  .chat-footer {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+}
+
+
+
+  </style>
+  </head>
+
+  <body>
+
+    <!-- <div class="ew-mobile-header">
+      <div class="d-flex align-items-center gap-2">
+        <img
+          src="https://media.istockphoto.com/id/1354842602/photo/portrait-of-a-young-businesswoman-working-on-a-laptop-in-an-office.jpg?s=612x612&w=0&k=20&c=kfP1g2712RiaxsDriIxFo363ARlaL2D591s-22CnIo8="
+          alt="Profile" class="ew-mobile-avatar">
+        <div>
+          <div class="ew-mobile-name">SnehaLatha</div>
+          <div class="ew-mobile-role">Developer</div>
+        </div>
+      </div>
+      <button type="button" class="ew-mobile-menu-btn"
+        onclick="ewToggleSidebar()">
+        <i class="bi bi-list"></i>
+        <span>Menu</span>
+      </button>
+    </div> -->
+
+    <nav class="ew-mobile-sidebar" id="ewMobileSidebar">
+      <div class="ew-mobile-sidebar-title">Menu</div>
+      <ul class="ew-mobile-menu-list">
+        <li class="ew-mobile-menu-item">
+          <a href="employeework.html">
+            <i class="bi bi-people-fill"></i>
+            <span>Employee Works</span>
+          </a>
+        </li>
+        <li class="ew-mobile-menu-item">
+          <a href="uploadworks.html">
+            <i class="bi bi-upload"></i>
+            <span>Upload Works</span>
+          </a>
+        </li>
+        <li class="ew-mobile-menu-item">
+          <a href="perfomance.html">
+            <i class="bi bi-bar-chart-line"></i>
+            <span>Performance</span>
+          </a>
+        </li>
+        <li class="ew-mobile-menu-item">
+          <a href="sheduletime.html">
+            <i class="bi bi-calendar-week"></i>
+            <span>Schedules</span>
+          </a>
+        </li>
+        <li class="ew-mobile-menu-item active">
+          <a href="messages.html">
+            <i class="bi bi-chat-dots"></i>
+            <span>Messages</span>
+          </a>
+        </li>
+        <li class="ew-mobile-menu-item">
+          <a href="notifications.html">
+            <i class="bi bi-bell"></i>
+            <span>Notifications</span>
+          </a>
+        </li>
+        <li class="ew-mobile-menu-item">
+          <a href="dumpfiles.html">
+            <i class="bi bi-trash"></i>
+            <span>Dump Files</span>
+          </a>
+        </li>
+        <li class="ew-mobile-menu-item">
+          <a href="payslips.html">
+            <i class="bi bi-receipt"></i>
+            <span>PaySlips</span>
+          </a>
+        </li>
+      </ul>
+      <div class="mt-2">
+        <a href="index.html">
+          <button class="btn-logout-side" id="btnLogoutSide">
+            <i class="bi bi-box-arrow-right me-1"></i> Log Out
+          </button>
+        </a>
+      </div>
+    </nav>
+
+    <div class="ew-mobile-sidebar-overlay" id="ewMobileSidebarOverlay"
+      onclick="ewToggleSidebar()"></div>
+
+    <h1 class="messages-title d-block d-md-none">Messages</h1>
+
+    <div class="messages-wrapper" id="messagesWrapper">
+      <div class="card messages-card">
+        <div class="row g-0 messages-row">
+          <div class="col-md-5 contacts-panel">
+            <div class="contacts-header">
+              <div class="avatar-circle">
+                <i class="bi bi-chat-dots-fill"></i>
+              </div>
+              <div class="flex-grow-1">
+                <div class="contacts-header-text-main">
+                  Chats
+                </div>
+                <div class="contacts-header-text-sub">
+                  All your conversations
+                </div>
+              </div>
+            </div>
+
+            <div class="contacts-list">
+              <button class="contact-item chat-contact" data-chat="harshith">
+                <div class="avatar-circle">H</div>
+                <div class="ms-2">
+                  <div class="contact-text-main">Harshith Gajelli</div>
+                  <div class="contact-text-sub">
+                    Hi, Hello. How are you, may I know about the services that
+                    you are providing.
+                  </div>
+                </div>
+                <div class="contact-time">3 mins</div>
+              </button>
+
+              <button class="contact-item chat-contact" data-chat="akhil">
+                <div class="avatar-circle">A</div>
+                <div class="ms-2">
+                  <div class="contact-text-main">Akhil Chohan</div>
+                  <div class="contact-text-sub">
+                    Hello, can you send me the file for the latest report?
+                  </div>
+                </div>
+                <div class="contact-time">8 mins</div>
+              </button>
+
+              <button class="contact-item chat-contact" data-chat="om">
+                <div class="avatar-circle">O</div>
+                <div class="ms-2">
+                  <div class="contact-text-main">Om Prakash</div>
+                  <div class="contact-text-sub">
+                    Please share the excel sheet.
+                  </div>
+                </div>
+                <div class="contact-time">12 mins</div>
+              </button>
+
+              <button class="contact-item chat-contact" data-chat="hari">
+                <div class="avatar-circle">H</div>
+                <div class="ms-2">
+                  <div class="contact-text-main">Hari Krishna</div>
+                  <div class="contact-text-sub">
+                    Can you send me the design document?
+                  </div>
+                </div>
+                <div class="contact-time">20 mins</div>
+              </button>
+
+              <button class="contact-item chat-contact" data-chat="sneha">
+                <div class="avatar-circle">S</div>
+                <div class="ms-2">
+                  <div class="contact-text-main">Sneha Latha</div>
+                  <div class="contact-text-sub">
+                    Hello! Can you send the project status excel file?
+                  </div>
+                </div>
+                <div class="contact-time">30 mins</div>
+              </button>
+
+              <button class="contact-item chat-contact" data-chat="vrushvini">
+                <div class="avatar-circle">V</div>
+                <div class="ms-2">
+                  <div class="contact-text-main">Vrushvini</div>
+                  <div class="contact-text-sub">
+                    Hi, let us connect tomorrow regarding the wireframes.
+                  </div>
+                </div>
+                <div class="contact-time">45 mins</div>
+              </button>
+
+              <button class="contact-item chat-contact" data-chat="vijay">
+                <div class="avatar-circle">V</div>
+                <div class="ms-2">
+                  <div class="contact-text-main">Vijay</div>
+                  <div class="contact-text-sub">
+                    Please send the excel summary once it is ready.
+                  </div>
+                </div>
+                <div class="contact-time">1 hr</div>
+              </button>
+
+              <button class="contact-item chat-contact" data-chat="karthik">
+                <div class="avatar-circle">K</div>
+                <div class="ms-2">
+                  <div class="contact-text-main">Karthik</div>
+                  <div class="contact-text-sub">
+                    Hello, can you send me the file details today?
+                  </div>
+                </div>
+                <div class="contact-time">2 hrs</div>
+              </button>
+
+              <button class="contact-item chat-contact" data-chat="dummy1">
+                <div class="avatar-circle">D</div>
+                <div class="ms-2">
+                  <div class="contact-text-main">Dummy User 1</div>
+                  <div class="contact-text-sub">
+                    Sample extra chat to show scroll behaviour.
+                  </div>
+                </div>
+                <div class="contact-time">Yesterday</div>
+              </button>
+
+              <button class="contact-item chat-contact" data-chat="dummy2">
+                <div class="avatar-circle">D</div>
+                <div class="ms-2">
+                  <div class="contact-text-main">Dummy User 2</div>
+                  <div class="contact-text-sub">
+                    Another sample conversation entry.
+                  </div>
+                </div>
+                <div class="contact-time">2 days</div>
+              </button>
+            </div>
+          </div>
+
+          <div class="col-md-7 chat-panel">
+            <div class="chat-header d-none" id="chatHeader">
+              <button type="button" class="chat-back-btn d-md-none"
+                id="chatBackBtn">
+                <i class="bi bi-arrow-left"></i>
+              </button>
+
+              <div class="avatar-circle" id="chatHeaderAvatar">Y</div>
+              <div>
+                <div class="chat-header-name" id="chatHeaderName"></div>
+                <div class="chat-header-phone" id="chatHeaderPhone"></div>
+              </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessagesContainer">
+
+              <div id="emptyState" class="chat-empty-state">
+                Start conversation here
+              </div>
+
+              <div class="chat-thread d-none" data-chat="harshith">
+                <div class="chat-bubble-row incoming">
+                  <div class="chat-bubble-avatar">H</div>
+                  <div class="chat-bubble incoming">
+                    Hi, Hello. How are you, may I know about the services that
+                    you are providing.
+                  </div>
+                </div>
+                <div class="chat-time-row">4:00 PM</div>
+
+                <div class="chat-bubble-row outgoing">
+                  <div class="chat-bubble-avatar">Y</div>
+                  <div class="chat-bubble outgoing">
+                    We provide Digital marketing and Website Designing.
+                  </div>
+                </div>
+                <div class="chat-time-row">4:01 PM</div>
+              </div>
+
+              <div class="chat-thread d-none" data-chat="akhil">
+                <div class="chat-bubble-row incoming">
+                  <div class="chat-bubble-avatar">A</div>
+                  <div class="chat-bubble incoming">
+                    Hello, can you send me the file for the latest report?
+                  </div>
+                </div>
+                <div class="chat-time-row">3:20 PM</div>
+              </div>
+
+              <div class="chat-thread d-none" data-chat="om">
+                <div class="chat-bubble-row incoming">
+                  <div class="chat-bubble-avatar">O</div>
+                  <div class="chat-bubble incoming">
+                    Please share the excel sheet.
+                  </div>
+                </div>
+                <div class="chat-time-row">2:40 PM</div>
+              </div>
+
+              <div class="chat-thread d-none" data-chat="hari">
+                <div class="chat-bubble-row incoming">
+                  <div class="chat-bubble-avatar">H</div>
+                  <div class="chat-bubble incoming">
+                    Can you send me the design document?
+                  </div>
+                </div>
+                <div class="chat-time-row">1:15 PM</div>
+              </div>
+
+              <div class="chat-thread d-none" data-chat="sneha">
+                <div class="chat-bubble-row incoming">
+                  <div class="chat-bubble-avatar">S</div>
+                  <div class="chat-bubble incoming">
+                    Hello! Can you send the project status excel file?
+                  </div>
+                </div>
+                <div class="chat-time-row">11:45 AM</div>
+              </div>
+
+              <div class="chat-thread d-none" data-chat="vrushvini">
+                <div class="chat-bubble-row incoming">
+                  <div class="chat-bubble-avatar">V</div>
+                  <div class="chat-bubble incoming">
+                    Hi, let us connect tomorrow regarding the wireframes.
+                  </div>
+                </div>
+                <div class="chat-time-row">10:05 AM</div>
+              </div>
+
+              <div class="chat-thread d-none" data-chat="vijay">
+                <div class="chat-bubble-row incoming">
+                  <div class="chat-bubble-avatar">V</div>
+                  <div class="chat-bubble incoming">
+                    Please send the excel summary once it is ready.
+                  </div>
+                </div>
+                <div class="chat-time-row">9:35 AM</div>
+              </div>
+
+              <div class="chat-thread d-none" data-chat="karthik">
+                <div class="chat-bubble-row incoming">
+                  <div class="chat-bubble-avatar">K</div>
+                  <div class="chat-bubble incoming">
+                    Hello, can you send me the file details today?
+                  </div>
+                </div>
+                <div class="chat-time-row">9:10 AM</div>
+              </div>
+
+              <div class="chat-thread d-none" data-chat="dummy1">
+                <div class="chat-bubble-row incoming">
+                  <div class="chat-bubble-avatar">D</div>
+                  <div class="chat-bubble incoming">
+                    This is a sample extra chat used to show the scrolling.
+                  </div>
+                </div>
+                <div class="chat-time-row">Yesterday</div>
+              </div>
+
+              <div class="chat-thread d-none" data-chat="dummy2">
+                <div class="chat-bubble-row incoming">
+                  <div class="chat-bubble-avatar">D</div>
+                  <div class="chat-bubble incoming">
+                    Another example conversation entry here.
+                  </div>
+                </div>
+                <div class="chat-time-row">2 days ago</div>
+              </div>
+            </div>
+
+            <div class="chat-footer">
+              <form id="chatForm" class="d-flex gap-2 align-items-center">
+                <div class="chat-input-wrapper flex-grow-1">
+                  <button type="button" class="attach-btn-circle"
+                    id="attachButton">
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                  <input type="file" id="fileInput" class="d-none"
+                    accept=".xls,.xlsx,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                  <input type="text" id="messageInput"
+                    class="form-control chat-input-text"
+                    placeholder="Type a message...">
+                </div>
+                <button type="submit" class="btn send-btn">
+                  Send
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+
+function setVH() {
+  document.documentElement.style.setProperty(
+    '--vh',
+    `${window.innerHeight * 0.01}px`
+  );
+}
+setVH();
+window.addEventListener('resize', setVH);
+
+
+
+    function ewToggleSidebar() {
+      const sidebar = document.getElementById("ewMobileSidebar");
+      const overlay = document.getElementById("ewMobileSidebarOverlay");
+      const isOpen = sidebar.classList.contains("open");
+
+      if (isOpen) {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+      } else {
+        sidebar.classList.add("open");
+        overlay.classList.add("show");
+      }
+    }
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 768) {
+        const sidebar = document.getElementById("ewMobileSidebar");
+        const overlay = document.getElementById("ewMobileSidebarOverlay");
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const contacts = document.querySelectorAll('.chat-contact');
+      const chatThreads = document.querySelectorAll('.chat-thread');
+      const chatHeader = document.getElementById('chatHeader');
+      const chatHeaderName = document.getElementById('chatHeaderName');
+      const chatHeaderAvatar = document.getElementById('chatHeaderAvatar');
+      const chatHeaderPhone = document.getElementById('chatHeaderPhone');
+      const chatMessagesContainer = document.getElementById('chatMessagesContainer');
+      const emptyState = document.getElementById('emptyState');
+
+      const chatForm = document.getElementById('chatForm');
+      const messageInput = document.getElementById('messageInput');
+      const attachButton = document.getElementById('attachButton');
+      const fileInput = document.getElementById('fileInput');
+
+      const messagesWrapper = document.getElementById('messagesWrapper');
+      const chatBackBtn = document.getElementById('chatBackBtn');
+
+      let activeChatId = null;
+
+      const phoneNumbers = {
+        harshith: '+91 8885777492',
+        akhil: '+91 9000000001',
+        om: '+91 9000000002',
+        hari: '+91 9000000003',
+        sneha: '+91 9000000004',
+        vrushvini: '+91 9000000005',
+        vijay: '+91 9000000006',
+        karthik: '+91 9000000007',
+        dummy1: '',
+        dummy2: ''
+      };
+
+      function setActiveChat(chatId, btn) {
+        activeChatId = chatId;
+
+        contacts.forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+
+        chatThreads.forEach(thread => {
+          if (thread.getAttribute('data-chat') === chatId) {
+            thread.classList.remove('d-none');
+          } else {
+            thread.classList.add('d-none');
+          }
+        });
+
+        const name = btn.querySelector('.contact-text-main').innerText.trim();
+        chatHeaderName.textContent = name;
+        chatHeaderAvatar.textContent = name.charAt(0).toUpperCase();
+        chatHeaderPhone.textContent = phoneNumbers[chatId] || '';
+        chatHeader.classList.remove('d-none');
+
+        if (emptyState) {
+          emptyState.classList.add('d-none');
+        }
+
+     
+
+        if (window.innerWidth <= 767.98) {
+          messagesWrapper.classList.add('show-chat');
+        }
+
+        scrollToBottom();
+      }
+
+      contacts.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const chatId = btn.getAttribute('data-chat');
+          if (chatId === activeChatId) return;
+          setActiveChat(chatId, btn);
+        });
+      });
+
+      if (chatBackBtn) {
+        chatBackBtn.addEventListener('click', () => {
+          messagesWrapper.classList.remove('show-chat');
+        });
+      }
+
+      chatForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const text = messageInput.value.trim();
+        if (!text || !activeChatId) return;
+        addOutgoingMessage(text);
+        messageInput.value = '';
+      });
+
+      attachButton.addEventListener('click', function () {
+        if (!activeChatId) return;
+        fileInput.click();
+      });
+
+      fileInput.addEventListener('change', function () {
+        if (!activeChatId) return;
+        const file = fileInput.files[0];
+        if (!file) return;
+        addFileMessage(file);
+        fileInput.value = '';
+      });
+
+      function getActiveThreadElement() {
+        if (!activeChatId) return null;
+        return document.querySelector('.chat-thread[data-chat="' + activeChatId + '"]');
+      }
+
+      function getCurrentTimeString() {
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours || 12;
+        return hours + ':' + minutes + ' ' + ampm;
+      }
+
+      function addOutgoingMessage(text) {
+        const thread = getActiveThreadElement();
+        if (!thread) return;
+
+        const row = document.createElement('div');
+        row.className = 'chat-bubble-row outgoing';
+
+        row.innerHTML = `
+        <div class="chat-bubble-avatar">Y</div>
+        <div class="chat-bubble outgoing">
+          ${escapeHtml(text)}
+        </div>
+      `;
+
+        const timeRow = document.createElement('div');
+        timeRow.className = 'chat-time-row';
+        timeRow.textContent = getCurrentTimeString();
+
+        thread.appendChild(row);
+        thread.appendChild(timeRow);
+        scrollToBottom();
+      }
+
+      function addFileMessage(file) {
+        const thread = getActiveThreadElement();
+        if (!thread) return;
+
+        const url = URL.createObjectURL(file);
+
+        const row = document.createElement('div');
+        row.className = 'chat-bubble-row outgoing';
+
+        row.innerHTML = `
+        <div class="chat-bubble-avatar">Y</div>
+        <div class="chat-bubble outgoing">
+          <a href="${url}" target="_blank" class="file-bubble-link text-white">
+            <i class="bi bi-file-earmark-excel"></i>
+            <span>${escapeHtml(file.name)}</span>
+          </a>
+        </div>
+      `;
+
+        const timeRow = document.createElement('div');
+        timeRow.className = 'chat-time-row';
+        timeRow.textContent = getCurrentTimeString();
+
+        thread.appendChild(row);
+        thread.appendChild(timeRow);
+        scrollToBottom();
+      }
+
+      function scrollToBottom() {
+        if (!activeChatId) return;
+        chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+      }
+
+      function escapeHtml(str) {
+        return str.replace(/[&<>"']/g, function (m) {
+          return ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+          })[m];
+        });
+      }
+
+    });
+  </script>
+    <script>
+  function setVH() {
+    document.documentElement.style.setProperty(
+      '--vh',
+      `${window.innerHeight * 0.01}px`
+    );
+  }
+  setVH();
+  window.addEventListener('resize', setVH);
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const messagesWrapper = document.getElementById('messagesWrapper');
+    const chatMessagesContainer = document.getElementById('chatMessagesContainer');
+    const chatBackBtn = document.getElementById('chatBackBtn');
+    const messageInput = document.getElementById('messageInput');
+
+    function scrollToBottom() {
+      chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+    }
+
+    document.querySelectorAll('.chat-contact').forEach(btn => {
+      btn.addEventListener('click', () => {
+        messagesWrapper.classList.add('show-chat');
+        setTimeout(scrollToBottom, 100);
+      });
+    });
+
+    if (chatBackBtn) {
+      chatBackBtn.addEventListener('click', () => {
+        messagesWrapper.classList.remove('show-chat');
+      });
+    }
+
+    if (messageInput) {
+      messageInput.addEventListener('focus', () => {
+        setTimeout(scrollToBottom, 300);
+      });
+    }
+  });
+  
+</script>
+
+  </body>
+
+</html>
