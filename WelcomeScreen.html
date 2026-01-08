@@ -16,7 +16,14 @@
     // Not logged in
     window.location.href = "index.html";
   }
+   const role = localStorage.getItem("employeeRole");
+
+  if (role !== "ADMIN") {
+    document.querySelectorAll(".admin-only")
+      .forEach(el => el.style.display = "none");
+  }
 </script>
+
 <style>
 html, body {
   height: 100%;
@@ -256,6 +263,10 @@ body {
 
       <!-- MENU -->
       <div class="menu-list">
+        <div class="menu-item admin-only" onclick="loadScreen('admin-create-employee.html', this)">
+  <i class="bi bi-person-plus-fill"></i> Create Employee
+</div>
+
         <div class="menu-item" onclick="loadScreen('logintime.html',this)">
      <i class="bi bi-stopwatch"></i> Login Times
         </div>

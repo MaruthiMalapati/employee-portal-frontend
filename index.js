@@ -58,6 +58,7 @@ form.addEventListener("submit", async (e) => {
     localStorage.setItem("authToken", result.token);
     localStorage.setItem("employeeName", result.employee.name);
     localStorage.setItem("employeeUsername", result.employee.username);
+    localStorage.setItem("employeeRole", result.employee.role);
 
     window.location.href = "WelcomeScreen.html";
   } catch (err) {

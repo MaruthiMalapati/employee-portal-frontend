@@ -52,6 +52,15 @@
       margin-top: 10px;
     }
   </style>
+  <script>
+  const token = localStorage.getItem("authToken");
+  const role = localStorage.getItem("employeeRole");
+
+  if (!token || role !== "ADMIN") {
+    alert("Access denied");
+    window.location.href = "index.html";
+  }
+</script>
 </head>
 
 <body>
