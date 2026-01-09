@@ -21,6 +21,7 @@
   if (role !== "ADMIN") {
     document.querySelectorAll(".admin-only")
       .forEach(el => el.style.display = "none");
+      document.getElementById('sessionStatus').style.display = 'none';
   }
 </script>
 
@@ -333,6 +334,35 @@ body {
      <div id="welcomeView">
   <div class="text-center">
     <h2 id="welcomeText"></h2>
+    <div class="row g-4">
+    <!-- <div id="sessionStatus" class="alert alert-light border small mb-3">
+    
+      ONLINE NOW 
+      <div class="col-md-6">
+        <div class="card border-success">
+          <div class="card-header bg-success text-white">
+            🟢 Online Now
+          </div>
+          <div class="card-body">
+            <ul id="onlineNowList" class="list-group small"></ul>
+          </div>
+        </div>
+      </div>
+
+      NOT LOGGED IN TODAY 
+      <div class="col-md-6">
+        <div class="card border-danger">
+          <div class="card-header bg-danger text-white">
+            🔴 Not Logged In Today
+          </div>
+          <div class="card-body">
+            <ul id="notLoggedInList" class="list-group small"></ul>
+          </div>
+        </div>
+      </div>
+    </div> -->
+</div>
+
     <p class="text-muted">
       Use the sidebar to manage your work and performance.
     </p>
@@ -475,7 +505,65 @@ const welcomeText = document.getElementById("welcomeText");
 
 <script src="js/config.js"></script>
 <script>
-async function logout() {
+
+//   async function loadAdminAttendanceOverview() {
+//   const token = localStorage.getItem("authToken");
+
+//   // Online now
+//   const onlineRes = await fetch(`${API_BASE_URL}/api/admin/admin-online-now`, {
+//     headers: { Authorization: "Bearer " + token }
+//   });
+//   const onlineResult = await onlineRes.json();
+
+//   const onlineList = document.getElementById("onlineNowList");
+//   onlineList.innerHTML = "";
+
+//   onlineResult.data.forEach(item => {
+//     const time = new Date(item.login_time).toLocaleTimeString("en-IN", {
+//       timeZone: "Asia/Kolkata",
+//       hour: "2-digit",
+//       minute: "2-digit",
+//       hour12: true
+//     });
+
+//     onlineList.innerHTML += `
+//       <li class="list-group-item d-flex justify-content-between">
+//         <span>${item.employees.name}</span>
+//         <span class="text-muted">${time}</span>
+//       </li>
+//     `;
+//   });
+
+//   if (!onlineResult.data.length) {
+//     onlineList.innerHTML = `<li class="list-group-item text-muted">No active users</li>`;
+//   }
+
+//   // Not logged in today
+//   const notLoggedRes = await fetch(`${API_BASE_URL}/api/admin-not-logged-in-today`, {
+//     headers: { Authorization: "Bearer " + token }
+//   });
+//   const notLoggedResult = await notLoggedRes.json();
+
+//   const notLoggedList = document.getElementById("notLoggedInList");
+//   notLoggedList.innerHTML = "";
+
+//   notLoggedResult.data.forEach(emp => {
+//     notLoggedList.innerHTML += `
+//       <li class="list-group-item">${emp.name}</li>
+//     `;
+//   });
+
+//   if (!notLoggedResult.data.length) {
+//     notLoggedList.innerHTML = `<li class="list-group-item text-muted">Everyone logged in 🎉</li>`;
+//   }
+// }
+//   if (employeeRole === "ADMIN") {
+//     loadAdminAttendanceOverview();
+//   } 
+
+
+
+  async function logout() {
   const token = localStorage.getItem("authToken");
 
   if (!token) {

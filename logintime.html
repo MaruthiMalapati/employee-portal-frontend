@@ -93,19 +93,22 @@ body {
 
 <div class="wrapper">
   <div class="row g-4 justify-content-center">
+<div id="sessionStatus" class="alert alert-light border small">
+  Loading session status...
+</div>
 
     <!-- LOGIN -->
-    <div class="col-12 col-md-6">
+    <!-- <div class="col-12 col-md-6">
       <div class="time-card">
         <div class="time-title">Login Time</div>
         <div class="time-value" id="loginTime">--:--:--</div>
         <div class="day-text" id="loginDay"></div>
         <button class="btn btn-light btn-sm" disabled>Logged In</button>
       </div>
-    </div>
+    </div> -->
 
     <!-- LOGOUT -->
-    <div class="col-12 col-md-6">
+    <!-- <div class="col-12 col-md-6">
       <div class="time-card">
         <div class="time-title">Logout Time</div>
         <div class="time-value" id="logoutTime">--:--:--</div>
@@ -114,14 +117,71 @@ body {
           Logout
         </button>
       </div>
-    </div>
+    </div> -->
 
   </div>
 
   <div class="status-text" id="statusMessage"></div>
 </div>
 
+<script src="js/config.js"></script>
 <script>
+async function loadSessionStatus() {
+  const token = localStorage.getItem("authToken");
+  if (!token) return;
+
+  const res = await fetch(`${API_BASE_URL}/api/login/employee-session-status`, {
+    headers: {
+      Authorization: "Bearer " + token
+    }
+  });
+
+  const result = await res.json();
+  const el = document.getElementById("sessionStatus");
+
+  if (!result.success || !result.session) {
+    el.innerText = "ℹ️ No active session";
+    return;
+  }
+
+  const { login_time, logout_time, logout_type } = result.session;
+
+  const loginIST = new Date(login_time).toLocaleTimeString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true
+  });
+
+  if (!logout_time) {
+    el.innerHTML = `
+      🟢 <strong>Logged in at ${loginIST}</strong><br>
+      ⏰ Auto logout at <strong>6:30 PM</strong>
+    `;
+  } else {
+    const logoutIST = new Date(logout_time).toLocaleTimeString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true
+    });
+
+    el.innerHTML = `
+      🔴 <strong>Logged out at ${logoutIST}</strong>
+      <small class="text-muted">(${logout_type})</small>
+    `;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadSessionStatus);
+
+
+
+
+
+
+
+
 let loginDate = new Date();
 let timer = null;
 
