@@ -165,6 +165,10 @@
       display: none !important;
     }
 
+    .sticky-top-gap {
+      top: 18px;
+    }
+
     @media (max-width: 768px) {
       .page-shell {
         padding: 18px 12px 28px;
@@ -188,7 +192,7 @@
 
     <div class="row g-4">
       <div class="col-lg-4" id="taskFormColumn">
-        <div class="panel-card">
+        <div class="panel-card hidden sticky-top sticky-top-gap" id="taskFormCard">
           <div class="panel-title">
             <h2 id="formTitle">Add Daily Task</h2>
             <button class="btn btn-outline-secondary btn-sm btn-soft hidden" id="cancelEditBtn" type="button">
@@ -200,6 +204,13 @@
             <div class="mb-3">
               <label class="form-label" for="taskDate">Task Date</label>
               <input type="date" id="taskDate" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label hidden" for="taskEmployee" id="taskEmployeeLabel">Employee</label>
+              <select id="taskEmployee" class="form-select hidden">
+                <option value="">Select Employee</option>
+              </select>
             </div>
 
             <div class="mb-3">
@@ -233,13 +244,21 @@
         <div class="panel-card">
           <div class="panel-title">
             <h2 id="listTitle">Today's Tasks</h2>
-            <span class="badge text-bg-light border" id="taskCountBadge">0 tasks</span>
+            <div class="d-flex align-items-center gap-2">
+              <button class="btn btn-brand btn-soft" type="button" id="openTaskFormBtn">Create Task</button>
+              <span class="badge text-bg-light border" id="taskCountBadge">0 tasks</span>
+            </div>
           </div>
 
           <div class="row g-3 mb-3" id="filterRow">
             <div class="col-md-4">
               <label class="form-label" for="filterDate">View Date</label>
               <input type="date" id="filterDate" class="form-control" />
+              <div class="mt-2">
+                <button class="btn btn-outline-secondary btn-sm btn-soft" type="button" id="clearDateFilterBtn">
+                  Show All
+                </button>
+              </div>
             </div>
             <div class="col-md-4 hidden" id="employeeFilterWrap">
               <label class="form-label" for="employeeFilter">Employee</label>
@@ -300,15 +319,20 @@
     });
 
     const form = document.getElementById("taskForm");
+    const taskFormCard = document.getElementById("taskFormCard");
     const taskDateInput = document.getElementById("taskDate");
     const taskTitleInput = document.getElementById("taskTitle");
     const taskDescriptionInput = document.getElementById("taskDescription");
     const taskStatusInput = document.getElementById("taskStatus");
+    const taskEmployeeInput = document.getElementById("taskEmployee");
+    const taskEmployeeLabel = document.getElementById("taskEmployeeLabel");
     const filterDateInput = document.getElementById("filterDate");
     const employeeFilter = document.getElementById("employeeFilter");
     const employeeFilterWrap = document.getElementById("employeeFilterWrap");
     const statusFilter = document.getElementById("statusFilter");
     const refreshBtn = document.getElementById("refreshBtn");
+    const clearDateFilterBtn = document.getElementById("clearDateFilterBtn");
+    const openTaskFormBtn = document.getElementById("openTaskFormBtn");
     const taskTableHead = document.getElementById("taskTableHead");
     const taskTableBody = document.getElementById("taskTableBody");
     const emptyState = document.getElementById("emptyState");
@@ -325,15 +349,16 @@
     let editingTaskId = null;
 
     taskDateInput.value = today;
-    filterDateInput.value = today;
+    filterDateInput.value = "";
 
     if (isAdmin) {
       heroTitle.textContent = "Team Daily Tasks";
-      heroText.textContent = "Review all employees' tasks for the day, filter by employee or status, and keep a clear view of what is pending, blocked, or complete.";
+      heroText.textContent = "Create tasks for yourself or the team, and review all employee tasks with optional date and status filters.";
       listTitle.textContent = "Team Task List";
-      listDescription.textContent = "Use the filters to review the full team's daily task updates.";
+      listDescription.textContent = "All team tasks are shown by default. Use the filters only when you want a narrower view.";
       employeeFilterWrap.classList.remove("hidden");
-      taskFormColumn.classList.add("hidden");
+      taskEmployeeLabel.classList.remove("hidden");
+      taskEmployeeInput.classList.remove("hidden");
     }
 
     function escapeHtml(value) {
@@ -347,7 +372,7 @@
 
     function renderTableHead() {
       const headers = isAdmin
-        ? ["Employee", "Date", "Task", "Description", "Status", "Updated"]
+        ? ["Employee", "Date", "Task", "Description", "Status", "Updated", "Action"]
         : ["Date", "Task", "Description", "Status", "Updated", "Action"];
 
       taskTableHead.innerHTML = headers.map(header => `<th>${header}</th>`).join("");
@@ -386,21 +411,39 @@
       form.reset();
       taskDateInput.value = filterDateInput.value || today;
       taskStatusInput.value = "Pending";
+      if (isAdmin) {
+        taskEmployeeInput.value = "";
+      }
       formTitle.textContent = "Add Daily Task";
       submitBtn.textContent = "Save Task";
       cancelEditBtn.classList.add("hidden");
     }
 
+    function openTaskForm() {
+      taskFormCard.classList.remove("hidden");
+      openTaskFormBtn.classList.add("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function closeTaskForm() {
+      resetForm();
+      taskFormCard.classList.add("hidden");
+      openTaskFormBtn.classList.remove("hidden");
+    }
+
     function fillFormForEdit(task) {
+      openTaskForm();
       editingTaskId = task.id;
       taskDateInput.value = task.task_date;
       taskTitleInput.value = task.task_title;
       taskDescriptionInput.value = task.task_description || "";
       taskStatusInput.value = task.status;
+      if (isAdmin && task.employees?.id) {
+        taskEmployeeInput.value = task.employees.id;
+      }
       formTitle.textContent = "Update Task";
       submitBtn.textContent = "Update Task";
       cancelEditBtn.classList.remove("hidden");
-      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     async function fetchJson(url, options = {}) {
@@ -431,12 +474,13 @@
       });
 
       employeeFilter.innerHTML = `<option value="">All Employees</option>`;
+      taskEmployeeInput.innerHTML = `<option value="">Select Employee</option>`;
       result.data.forEach(employee => {
-        employeeFilter.innerHTML += `
-          <option value="${employee.id}">
+        const optionHtml = `<option value="${employee.id}">
             ${escapeHtml(employee.name)}${employee.employee_code ? ` (${escapeHtml(employee.employee_code)})` : ""}
-          </option>
-        `;
+          </option>`;
+        employeeFilter.innerHTML += optionHtml;
+        taskEmployeeInput.innerHTML += optionHtml;
       });
     }
 
@@ -467,6 +511,11 @@
               <td>${escapeHtml(task.task_description || "—")}</td>
               <td>${statusBadge}</td>
               <td>${formatDateTime(task.updated_at || task.created_at)}</td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary edit-task-btn" data-task-id="${task.id}">
+                  Edit
+                </button>
+              </td>
             </tr>
           `;
         }
@@ -487,31 +536,30 @@
         `;
       }).join("");
 
-      if (!isAdmin) {
-        document.querySelectorAll(".edit-task-btn").forEach(button => {
-          button.addEventListener("click", () => {
-            const task = tasks.find(item => item.id === button.dataset.taskId);
-            if (task) {
-              fillFormForEdit(task);
-            }
-          });
+      document.querySelectorAll(".edit-task-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          const task = tasks.find(item => item.id === button.dataset.taskId);
+          if (task) {
+            fillFormForEdit(task);
+          }
         });
-      }
+      });
     }
 
     async function loadTasks() {
       try {
-        const date = filterDateInput.value || today;
+        const date = filterDateInput.value;
         const status = statusFilter.value;
 
         let url = "";
         if (isAdmin) {
-          const params = new URLSearchParams({ date });
+          const params = new URLSearchParams();
+          if (date) params.set("date", date);
           if (status) params.set("status", status);
           if (employeeFilter.value) params.set("employee_id", employeeFilter.value);
           url = `${API_BASE_URL}/api/tasks/admin?${params.toString()}`;
         } else {
-          url = `${API_BASE_URL}/api/tasks/my?date=${encodeURIComponent(date)}`;
+          url = `${API_BASE_URL}/api/tasks/my${date ? `?date=${encodeURIComponent(date)}` : ""}`;
         }
 
         const result = await fetchJson(url, {
@@ -545,8 +593,17 @@
         status: taskStatusInput.value
       };
 
+      if (isAdmin && taskEmployeeInput.value) {
+        payload.employee_id = taskEmployeeInput.value;
+      }
+
       if (!payload.task_title) {
         alert("Task title is required");
+        return;
+      }
+
+      if (isAdmin && !editingTaskId && !payload.employee_id) {
+        alert("Please select an employee");
         return;
       }
 
@@ -567,8 +624,7 @@
           alert("Task created successfully");
         }
 
-        filterDateInput.value = payload.task_date;
-        resetForm();
+        closeTaskForm();
         await loadTasks();
       } catch (err) {
         console.error(err);
@@ -578,12 +634,20 @@
       }
     });
 
-    cancelEditBtn.addEventListener("click", resetForm);
+    cancelEditBtn.addEventListener("click", closeTaskForm);
+    openTaskFormBtn.addEventListener("click", () => {
+      resetForm();
+      openTaskForm();
+    });
     refreshBtn.addEventListener("click", loadTasks);
     filterDateInput.addEventListener("change", () => {
-      if (!isAdmin) {
+      if (!isAdmin && filterDateInput.value) {
         taskDateInput.value = filterDateInput.value;
       }
+      loadTasks();
+    });
+    clearDateFilterBtn.addEventListener("click", () => {
+      filterDateInput.value = "";
       loadTasks();
     });
     statusFilter.addEventListener("change", loadTasks);
